@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: springargocd
+  labels:
+    team : springargocddevelopment
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: springargocd
+  template:
+    metadata:
+      labels:
+        app: springargocd
+    spec:
+      containers:
+      - name: springargocdcon
+        image: syr7s/spring-argocd:v2
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "500m"
+          limits:
+            memory: "512Mi"
+            cpu: "768m"
+        ports:
+        - containerPort: 8100
+        readinessProbe:
+          httpGet:
+            path: /actuator/health/readiness
+            port: 8100
+          initialDelaySeconds: 30
+          periodSeconds: 15
+        livenessProbe:
+          httpGet:
+            path: /actuator/health/liveness
+            port: 8100
+          initialDelaySeconds: 15
+          periodSeconds: 20
+        
