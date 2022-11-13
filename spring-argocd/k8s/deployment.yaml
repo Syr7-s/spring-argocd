@@ -6,7 +6,7 @@ metadata:
   labels:
     team : springargocddevelopment
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app: springargocd
@@ -18,13 +18,13 @@ spec:
       containers:
       - name: springargocdcon
         image: syr7s/spring-argocd:v2
-        resources:
-          requests:
-            memory: "128Mi"
-            cpu: "500m"
-          limits:
-            memory: "512Mi"
-            cpu: "768m"
+        #resources:
+        #  requests:
+        #    memory: "128Mi"
+        #    cpu: "500m"
+        #  limits:
+        #    memory: "512Mi"
+        #    cpu: "768m"
         ports:
         - containerPort: 8100
         readinessProbe:
