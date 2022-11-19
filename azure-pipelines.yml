@@ -1,0 +1,30 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+trigger:
+- master
+
+pool: 
+  name: docker
+
+steps:
+- task: CmdLine@2
+  displayName: "Mvn Build"
+  inputs:
+    script: | 
+      VERSION=$(mvn -q -Dexec.executable="echo" -Dexec.args='${project.version}' --non-recursive org.codehaus.mojo:exec-maven-plugin:1.6.0:exec)
+      echo "##vso[task.setvariable variable=VERSION]$VERSION"
+      #export JAVA_HOME="/opt/java/jdk-17.0.2"
+      mvn clean install -Dmaven.test.skip=true
+- task: CmdLine@2
+  inputs:
+    script: |
+      docker build -t syr7s/spring-argocd:$VERSION .
+      docker login -u $(dockerhubuser) -p $(dockerhubpassword)
+      docker push syr7s/spring-argocd:$VERSION
+      image_digest=`docker inspect syr7s/spring-argocd:$VERSION --format '{{ index .RepoDigests 0}}' | cut -d'@' -f2`
+      echo $image_digest
+      echo "##vso[task.setvariable variable=image_digest]$image_digest"
+      echo "##vso[task.setvariable variable=VERSION]$image_digest"
