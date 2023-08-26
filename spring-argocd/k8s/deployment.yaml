@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
       - name: springargocdcon
-        image: syr7s/spring-argocd:v3
+        image: syr7s/spring-argocd:v4
         #resources:
         #  requests:
         #    memory: "128Mi"
